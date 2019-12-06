@@ -1,4 +1,6 @@
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /** Verwaltungssoftware zur Zuordnung von Autokennzeichen auf einen Besitzer.
  * @author Gudrun Schiedermeier, gschied@haw-landshut.de
@@ -69,13 +71,14 @@ public class LicenceAdministration {
         {
             throw new IllegalArgumentException();
         }
-        List<String> list = new ArrayList<String> ();
+        List<String> list = this.getPlatesToCar().entrySet().stream().filter(pair->owner.equals(pair.getValue().getOwner())).map(x->x.getKey()).collect(Collectors.toList());
+        /**List<String> list = new ArrayList<String> ();
         for (Map.Entry<String,Car> pair : this.getPlatesToCar().entrySet()){
             if (owner.equals(pair.getValue().getOwner()))
             {
                 list.add(pair.getKey());
             }
-        }
+        }*/
         return list;
     }
 
@@ -84,13 +87,17 @@ public class LicenceAdministration {
      * @return sortierte Liste von Nummernschildern.
      */
     public List<String> getLicencesOlderThan(int beforeYear) {
-        List<String> list = new ArrayList<String> ();
-        for (Map.Entry<String,Car> pair : this.getPlatesToCar().entrySet()){
+
+        List<String> list = this.getPlatesToCar().entrySet().stream().filter(pair->beforeYear > pair.getValue().getBuildingYear()).map(x->x.getKey()).collect(Collectors.toList());
+
+        /**
+         *  List<String> list = new ArrayList<String> ();
+         *  for (Map.Entry<String,Car> pair : this.getPlatesToCar().entrySet()){
             if (beforeYear > pair.getValue().getBuildingYear())
             {
                 list.add(pair.getKey());
             }
-        }
+        }*/
         return list;
     }
 
@@ -104,6 +111,7 @@ public class LicenceAdministration {
             throw new NoSuchElementException();
         }
         this.platesToCar.remove(list.get(0));
+        //this.platesToCar = (Map<String, Car>) list.stream().skip(1).collect(Collectors.toList());
     }
 
     /** Ueberprueft den String fuer ein Nummernschild auf einen korrekten Aufbau.
